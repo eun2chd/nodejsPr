@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- jQuery CDN -->
+<script
+src="https://code.jquery.com/jquery-3.7.1.min.js"
+integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+crossorigin="anonymous"
+></script>
+
+<!-- axios CDN -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<style>
+  div.result {
+    font-size: 20px;
+    color : blue;
+  }
+  div.fail {
+    font-size: 20px;
+    color : red;
+  }
+</style>
+
+<body>
+  <h2>Get 요청</h2>
+  <form  name = "join">
+    <label for="name">name</label><br>
+    <input type="text" name = "name" id = "name" required/><br>
+    <fieldset>
+      <legend>성별</legend>
+      <input type="radio" name = "gender" id="gender" value = "남자" required>남
+      <input type="radio" name = "gender" id="woman" value = "여자" required>여<br>
+    </fieldset>
+
+    <fieldset>
+      <legend>생년월일</legend>
+      <select id="year" name="year">
+        <% for (let y = 2024; y >= 1900; y--) { %> 
+          <option value="<%= y %>"><%= y %>년</option>
+        <% } %>
+      </select>
+  
+      <select id="month" name="month">
+        <% for (let y = 1; y <= 12; y++) { %> 
+          <option value="<%= y %>"><%= y %>월</option>
+        <% } %>
+      </select>
+  
+      <select id="day" name="day">
+        <% for (let y = 1; y <= 31; y++) { %> 
+          <option value="<%= y %>"><%= y %>일</option>
+        <% } %>
+      </select><br>
+    </fieldset>
+
+    <fieldset>
+      <legend>관심사</legend>
+      <input type="checkbox" name = "inst" value="trval">여행
+      <input type="checkbox" name = "inst" value="pashion">패션
+      <input type="checkbox" name = "inst" value="food">음식<br>
+    </fieldset>
+    <br>
+    <button type = "button" onclick="axiosget()">회원가입</button>
+
+    <!-- 사용자 정보 출력 -->
+    <div class="result">
+
+    </div>
+
+  <script>
+    // 폼 선택
+    const form = document.forms["join"];
+    let resultBox = document.querySelector('.result');
+
+
+
+    function axiosget() {
+      const insts = Array.from(form.inst)
+      .filter((element) => element.checked) // 체크된 요소 필터링
+      .map((element) => element.value); // 체크된 요소의 값을 가져오기
+  
+      console.log(insts);
+
+
+      console.log("axiosget 함수 호출!");
+   
+      // 요청에 실어서 보낼 데이터 변수 (서버에서 받을 정보)
+      let data = {
+        name : form.name.value,
+        gender : form.gender.value,
+        year : form.year.value,
+        month : form.month.value,
+        day : form.day.value,
+        inst : insts
+      };
+    
+      // Ajax로 서버에 get 요청 보내기
+      axios.get('/axios', {params : data})
+      .then((response) => {
+        // 요청이 성공적으로 수행되었을 때 실행될 코드
+        console.log("success > ", response.data);
+        resultBox.textContent = 
+        `
+        이름 : ${data.name}
+        성별 : ${data.gender}
+        생년월일 : ${data.year}년${data.month}월${data.day}일
+        관심사 : ${data.inst};
+        `
+      
+      })
+      .catch((error) => {
+        console.log(error);
+        // 요청이 실패했을 때 실행될 코드
+      });
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- jQuery CDN -->
+<script
+src="https://code.jquery.com/jquery-3.7.1.min.js"
+integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+crossorigin="anonymous"
+></script>
+
+<!-- axios CDN -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+
+<style>
+  div.result {
+    font-size: 20px;
+    color : blue;
+  }
+  div.fail {
+    font-size: 20px;
+    color : red;
+  }
+</style>
+
+<body>
+  <fieldset>
+    <legend>로그인</legend>
+    <form name = "loginForm">
+      <label for="id">아이디</label>
+      <input type="text" name = "id"><br>
+      <label for="id">비밀번호</label>
+      <input type="text" name = "pw">
+      <button type = "button" onclick="axiosPost()">로그인</button>
+    </form>
+  </fieldset>
+  <div class = "result"></div>
+  <div class = "fail"></div>
+
+  <script>
+    const resultBox = document.querySelector('.result');
+    const failBox = document.querySelector('.fail');
+
+    // 폼 선택
+    const form = document.forms["loginForm"];
+
+    function axiosPost() {
+      console.log("axiosPost 함수 호출!");
+   
+      // 요청에 실어서 보낼 데이터 변수 (서버에서 받을 정보)
+      const data = {
+        id: form.id.value,
+        pw: form.pw.value,
+      };
+    
+      // Ajax로 서버에 POST 요청 보내기
+      axios.post('/axios', data)
+      .then((response) => {
+        // 요청이 성공적으로 수행되었을 때 실행될 코드
+        console.log("success > ", response.data);
+        resultBox.textContent = `로그인 성공 ID : ${data.id} pw : ${data.pw}`;
+        failBox.style.display="none"
+        resultBox.style.display="block"
+        
+      })
+      .catch((error) => {
+        console.log(error.response.status);
+        if(error.response.status == 401) {
+          failBox.textContent = '로그인 실패';
+          resultBox.style.display="none"
+          failBox.style.display="block"
+        }
+        // 요청이 실패했을 때 실행될 코드
+      });
+    }
+
+  </script>
+</body>
+</html>
